@@ -10,8 +10,8 @@ private repo and is pulled in automatically when a release is built.
 
 ## Install (Windows)
 
-<!-- Replace YOUR-USERNAME/YOUR-REPO once this is pushed to GitHub -->
-[![Download BetterBoard for Windows](https://img.shields.io/badge/Download-BetterBoard%20for%20Windows-2F6F62?style=for-the-badge)](https://github.com/YOUR-USERNAME/YOUR-REPO/releases/latest/download/BetterBoard-Setup.exe)
+<!-- Replace RadtALIVE/BetterBoard once this is pushed to GitHub -->
+[![Download BetterBoard for Windows](https://img.shields.io/badge/Download-BetterBoard%20for%20Windows-2F6F62?style=for-the-badge)](https://github.com/RadtALIVE/BetterBoard/releases/latest/download/BetterBoard-Setup.exe)
 
 Click the button, run the downloaded `BetterBoard-Setup.exe`, and step through the normal
 Next → Install → Finish wizard. It adds Start Menu and (optionally) Desktop shortcuts.
@@ -43,13 +43,13 @@ git push origin v1.0.0
 ```
 
 ### One-time setup before this works
-1. In `.github/workflows/release.yml`, replace `YOUR-USERNAME/BetterBoard-source` with
+1. In `.github/workflows/release.yml`, replace `RadtALIVE/BetterBoard-source` with
    your actual private source repo (owner/name).
 2. Create a **fine-grained Personal Access Token** with read-only access to that private
    repo only (GitHub → Settings → Developer settings → Personal access tokens).
 3. Add it as a secret on **this** repo, named `SOURCE_REPO_PAT`
    (this repo's Settings → Secrets and variables → Actions → New repository secret).
-4. In this README, replace `YOUR-USERNAME/YOUR-REPO` in the download badge link above
+4. In this README, replace `RadtALIVE/BetterBoard` in the download badge link above
    with this repo's own path, so the button always points at its own Releases page.
 
 Once those are set, every tag push builds a fresh installer and publishes it as a
