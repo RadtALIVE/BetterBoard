@@ -1,0 +1,59 @@
+name: Release
+
+# Push a tag like "v1.0.0" to trigger this:
+#   git tag v1.0.0
+#   git push origin v1.0.0
+#
+# This repo only holds the installer script + this workflow. The actual app source
+# (BetterBoardApp/) lives in a separate PRIVATE repo and gets checked out below.
+#
+# One-time setup before this will work:
+#   1. Replace YOUR-USERNAME/BetterBoard-source below with your private source repo.
+#   2. Create a fine-grained Personal Access Token with read-only access to that
+#      private repo (Settings -> Developer settings -> Personal access tokens).
+#   3. Add it as a secret on THIS repo named SOURCE_REPO_PAT
+#      (Settings -> Secrets and variables -> Actions -> New repository secret).
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Check out this repo (installer script + workflow)
+        uses: actions/checkout@v4
+
+      - name: Check out BetterBoard source (private repo)
+        uses: actions/checkout@v4
+        with:
+          repository: YOUR-USERNAME/BetterBoard-source
+          token: ${{ secrets.SOURCE_REPO_PAT }}
+          path: source
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Publish self-contained single-file app
+        # SelfContained, RuntimeIdentifier, PublishSingleFile, and DebugType=none are
+        # already set in BetterBoard.csproj, so this one command is all that's needed.
+        run: dotnet publish source/BetterBoardApp/BetterBoard.csproj -c Release
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Build installer
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\setup.iss'
+        shell: pwsh
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: installer/dist/BetterBoard-Setup.exe
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
